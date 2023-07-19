@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -40,5 +41,17 @@ public class ItemServiceImpl implements ItemService {
             item.setItemImage(imageName + fileExtension);
         }
         itemRepo.save(item);
+        itemDto.setItemId(item.getItemId());
+        System.out.println(itemDto.getItemId());
+    }
+
+    @Override
+    public Optional<Item> getItemById(int id) {
+        return itemRepo.findByIdNoOpt(id);
+    }
+
+    @Override
+    public List<Item> getAllItems() {
+        return itemRepo.findAll();
     }
 }
