@@ -12,5 +12,9 @@ public interface ItemService {
 
     Optional<Item> getItemById(int id);
 
-    List<Item> getAllItems();
+    List<Item> getAllItems() throws IOException;
+
+    List<Item> getThreeItems(int page);
+
+    void deleteItem(int id);
 }

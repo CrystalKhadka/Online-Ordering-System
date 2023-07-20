@@ -33,8 +33,14 @@ public class Item {
     @Column(name = "item_image")
     private String itemImage;
 
+    @Column(name="item_resize_image")
+    private String itemResizeImage;
+
     @Transient
     private String itemImageBase64;
+
+    @Transient
+    private String itemResizeImageBase64;
 
 
 }
