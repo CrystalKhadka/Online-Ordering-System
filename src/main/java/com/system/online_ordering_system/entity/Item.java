@@ -42,5 +42,9 @@ public class Item {
     @Transient
     private String itemResizeImageBase64;
 
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+
 
 }

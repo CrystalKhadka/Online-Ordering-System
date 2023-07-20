@@ -2,8 +2,10 @@ package com.system.online_ordering_system.service.impl;
 
 
 import com.system.online_ordering_system.dto.ItemDto;
+import com.system.online_ordering_system.entity.Category;
 import com.system.online_ordering_system.entity.Item;
 import com.system.online_ordering_system.repo.ItemRepo;
+import com.system.online_ordering_system.service.CategoryService;
 import com.system.online_ordering_system.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import net.coobird.thumbnailator.Thumbnails;
@@ -25,6 +27,7 @@ import javax.imageio.ImageIO;
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
     private final ItemRepo itemRepo;
+    private final CategoryService categoryService;
     private final String uploadDirectory = System.getProperty("user.dir") + "/item_img";
 
     @Override
@@ -63,6 +66,8 @@ public class ItemServiceImpl implements ItemService {
             // Update the item with the resized image path
             item.setItemResizeImage(imageName + "_resized" + fileExtension);
         }
+        Category category = categoryService.getCategoryById(itemDto.getCategoryId());
+        item.setCategory(category);
         itemRepo.save(item);
         itemDto.setItemId(item.getItemId());
     }
@@ -80,10 +85,35 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> getThreeItems(int page) {
+    public List<Item> getThreeItems(int page,String sort,String order) {
         int offset = (page - 1) * 3;
-        return itemRepo.getThreeItems(offset);
+
+        switch (sort) {
+            case "name" -> {
+                if (order.equals("asc")) {
+                    return itemRepo.findThreeItemsByNameAsc(offset);
+                } else {
+                    return itemRepo.findThreeItemsByNameDesc(offset);
+                }
+            }
+            case "price" -> {
+                if (order.equals("asc")) {
+                    return itemRepo.findThreeItemsByPriceAsc(offset);
+                } else {
+                    return itemRepo.findThreeItemsByPriceDesc(offset);
+                }
+            }
+            default -> {
+                if (order.equals("asc")) {
+                    return itemRepo.findThreeItemsByItemIdAsc(offset);
+                } else {
+                    return itemRepo.findThreeItemsByItemIdDesc(offset);
+                }
+            }
+        }
     }
+
+
 
     @Override
     public void deleteItem(int id) {
