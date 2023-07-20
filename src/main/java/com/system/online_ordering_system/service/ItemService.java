@@ -14,7 +14,7 @@ public interface ItemService {
 
     List<Item> getAllItems() throws IOException;
 
-    List<Item> getThreeItems(int page);
+    List<Item> getThreeItems(int page,String sort,String order);
 
     void deleteItem(int id);
 }

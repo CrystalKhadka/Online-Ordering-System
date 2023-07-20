@@ -2,6 +2,7 @@ package com.system.online_ordering_system.controller;
 
 import com.system.online_ordering_system.dto.ItemDto;
 import com.system.online_ordering_system.entity.Item;
+import com.system.online_ordering_system.service.CategoryService;
 import com.system.online_ordering_system.service.ItemService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,21 +20,28 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/item")
 public class ItemController {
+    private final CategoryService categoryService;
 
     private final ItemService itemService;
     @GetMapping("/add")
-    public String addItem() {
+    public String addItem(Model model){
+        model.addAttribute("categories",categoryService.getAllCategories());
         return "Item/addItem";
     }
 
     @PostMapping("/add")
     public String addItemPost(@Valid ItemDto itemDto) throws Exception {
+
         itemService.addItem(itemDto);
         return "redirect:/item/list";
     }
 
     @GetMapping("/list")
-    public String listItems(Model model, @RequestParam(defaultValue = "1") int page) throws IOException {
+    public String listItems(
+            Model model,
+            @RequestParam(defaultValue = "1") int page
+            ,@RequestParam(defaultValue = "itemId") String sort,
+            @RequestParam(defaultValue = "asc") String order) throws IOException {
 
         List<Item> allItems = itemService.getAllItems();
         int totalItems = allItems.size();
@@ -55,7 +63,7 @@ public class ItemController {
 
 
 
-        List<Item> items = itemService.getThreeItems(page);
+        List<Item> items = itemService.getThreeItems(page,sort,order);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("items", items.stream().map(item -> Item.builder()
@@ -65,8 +73,10 @@ public class ItemController {
                     .itemDescription(item.getItemDescription())
                     .itemQuantity(item.getItemQuantity())
                     .itemResizeImageBase64(getImageBase64(item.getItemResizeImage()))
+                    .category(item.getCategory())
                     .build()
         ));
+
         return "Item/listItem";
     }
 

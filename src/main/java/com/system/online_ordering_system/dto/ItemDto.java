@@ -17,5 +17,6 @@ public class ItemDto {
     private double itemPrice;
     private String itemDescription;
     private int itemQuantity;
+    private int categoryId;
     private MultipartFile itemImage;
 }
