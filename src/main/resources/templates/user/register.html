@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Registration Page</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row" ></div>
+    <div class="row mt-4">
+        <div class="col-2"></div>
+        <div class="col-8">
+            <form th:action="@{/user/register}" method="POST" enctype="multipart/form-data">
+                <div class="row d-flex justify-content-center align-items-center my-5">
+                    <h2>Registration Form</h2>
+                </div>
+                <div class="row">
+                    <div class="col-5 ">
+                        <div class="form-group">
+                            <div style="height: 25rem;width:30rem" class=" mb-5 border-black border border-3 rounded-circle">
+                                <img class="rounded-circle" src="" alt="photo" id="preview" height="100%" width="100%">
+                            </div>
+                            <input type="file" class="form-control-file" id="image" name="image">
+                        </div>
+                    </div>
+                    <div class="col-7 border p-5 ">
+                        <div class="form-group">
+                            <label for="fname">First Name:</label>
+                            <input type="text" class="form-control" id="fname" name="firstName" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lname">Last Name:</label>
+                            <input type="text" class="form-control" id="lname" name="lastName" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email:</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Password:</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone">Phone:</label>
+                            <input type="tel" class="form-control" id="phone" name="phone" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="address">Address:</label>
+                            <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
+                        </div>
+
+
+
+                        <button type="submit" class="btn btn-primary">Register</button>
+                    </div>
+                </div>
+
+
+
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.9/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    document.getElementById('image').addEventListener('change', function(event) {
+        var file = event.target.files[0];
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('preview').src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+</script>
+</body>
+</html>

@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
@@ -44,8 +45,14 @@ public class User implements UserDetails {
     @Column(name="image", nullable = false)
     private String image;
 
+    @Column(name="active")
+    private boolean active;
+
     @Transient
     private String imageBase64;
+
+    @Column(name="login_time")
+    private LocalDateTime loginTime;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",

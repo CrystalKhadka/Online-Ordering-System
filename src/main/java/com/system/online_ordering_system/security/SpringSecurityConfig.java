@@ -1,7 +1,5 @@
 package com.system.online_ordering_system.security;
 
-
-
 import com.system.online_ordering_system.config.PasswordEncoderUtil;
 import com.system.online_ordering_system.service.impl.SecurityUserDetailService;
 import jakarta.servlet.ServletException;
@@ -28,8 +26,8 @@ public class SpringSecurityConfig {
     private final SecurityUserDetailService securityUserDetailService;
 
     @Bean
-    public DaoAuthenticationProvider authenticationConfigurer(){
-        DaoAuthenticationProvider authenticationProvider=new DaoAuthenticationProvider();
+    public DaoAuthenticationProvider authenticationConfigurer() {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(securityUserDetailService);
         authenticationProvider.setPasswordEncoder(PasswordEncoderUtil.getInstance());
         return authenticationProvider;
@@ -39,36 +37,23 @@ public class SpringSecurityConfig {
     protected SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/login","/register")
+                .requestMatchers("/css/**","/js/**","/img/**","/user/**")
                 .permitAll()
-                .requestMatchers("/seller/**")
-                .hasAuthority("Seller")
-                .requestMatchers("/buyer/**")
-                .hasAuthority("Buyer")
                 .anyRequest()
                 .authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/login")
-                .successHandler(new RoleBasedAuthenticationSuccessHandler())
+                .loginPage("/user/login")
+                .defaultSuccessUrl("/dashboard/",true)
                 .usernameParameter("email")
                 .permitAll()
                 .and()
                 .httpBasic();
 
+
         return httpSecurity.build();
     }
-    private static class RoleBasedAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
-        @Override
-        public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException, IOException {
-            for (GrantedAuthority authority : authentication.getAuthorities()) {
-                if (authority.getAuthority().equals("Seller")) {
-                    response.sendRedirect("/seller/dashboard");
-                    return;
-                }
-            }
-            response.sendRedirect("/buyer/dashboard");
-        }
-    }
+
+
 
 }

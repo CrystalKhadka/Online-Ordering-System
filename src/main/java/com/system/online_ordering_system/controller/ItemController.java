@@ -40,7 +40,7 @@ public class ItemController {
     public String listItems(
             Model model,
             @RequestParam(defaultValue = "1") int page
-            ,@RequestParam(defaultValue = "itemId") String sort,
+            ,@RequestParam(defaultValue = "id") String sort,
             @RequestParam(defaultValue = "asc") String order) throws IOException {
 
         List<Item> allItems = itemService.getAllItems();
@@ -64,6 +64,8 @@ public class ItemController {
 
 
         List<Item> items = itemService.getThreeItems(page,sort,order);
+        model.addAttribute("sort", sort);
+        model.addAttribute("order", order);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", totalPages);
         model.addAttribute("items", items.stream().map(item -> Item.builder()
@@ -85,7 +87,7 @@ public class ItemController {
         Item item = itemService.getItemById(id).get();
         model.addAttribute("item", item);
         model.addAttribute("itemResizeImageBase64", getImageBase64(item.getItemResizeImage()));
-        return "item/editItem";
+        return "Item/editItem";
     }
 
     @PostMapping("/delete/{id}")
