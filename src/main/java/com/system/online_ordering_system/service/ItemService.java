@@ -17,4 +17,12 @@ public interface ItemService {
     List<Item> getThreeItems(int page,String sort,String order);
 
     void deleteItem(int id);
+
+    List<Item> getSixItemsByCategoryId(int id, int page, String partialName);
+
+    List<Item> getSixItems(int page, String partialName);
+
+    int countAllItems(String partialName);
+
+    int countAllItemsByCategoryId(int id, String partialName);
 }

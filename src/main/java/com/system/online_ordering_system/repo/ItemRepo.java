@@ -1,10 +1,8 @@
 package com.system.online_ordering_system.repo;
 
-import com.system.online_ordering_system.dto.ItemDto;
 import com.system.online_ordering_system.entity.Item;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -43,4 +41,16 @@ public interface ItemRepo extends JpaRepository<Item, Integer> {
 
     @Query(value = "select * from items order by item_id desc offset ?1 limit 3", nativeQuery = true)
     List<Item> findThreeItemsByItemIdDesc(int offset);
+
+    @Query(value = "select * from items where category_id = ?1 and LOWER(item_name) LIKE CONCAT('%', LOWER(?3), '%') order by item_id offset ?2 limit 6", nativeQuery = true)
+    List<Item> findSixItemsByCategoryId(int id, int offset, String partialName);
+
+    @Query(value = "select * from items where LOWER(item_name) LIKE CONCAT('%', LOWER(?2), '%') order by item_id  offset ?1 limit 6", nativeQuery = true)
+    List<Item> findSixItems(int offset, String partialName);
+
+    @Query(value = "select count(*) from items where LOWER(item_name) LIKE CONCAT('%', LOWER(?1), '%')", nativeQuery = true)
+    int countAllItems(String partialName);
+
+    @Query(value = "select count(*) from items where category_id = ?1 and LOWER(item_name) LIKE CONCAT('%', LOWER(?2), '%')", nativeQuery = true)
+    int countAllByCategoryId(int id, String partialName);
 }

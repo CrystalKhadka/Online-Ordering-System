@@ -11,8 +11,6 @@ import lombok.RequiredArgsConstructor;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.stereotype.Service;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -20,8 +18,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import javax.imageio.ImageIO;
 
 @Service
 @RequiredArgsConstructor
@@ -103,12 +99,15 @@ public class ItemServiceImpl implements ItemService {
                     return itemRepo.findThreeItemsByPriceDesc(offset);
                 }
             }
-            default -> {
+            case"id" -> {
                 if (order.equals("asc")) {
                     return itemRepo.findThreeItemsByItemIdAsc(offset);
                 } else {
                     return itemRepo.findThreeItemsByItemIdDesc(offset);
                 }
+            }
+            default -> {
+                return itemRepo.findThreeItemsByItemIdAsc(offset);
             }
         }
     }
@@ -118,6 +117,28 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public void deleteItem(int id) {
         itemRepo.deleteById(id);
+    }
+
+    @Override
+    public List<Item> getSixItems(int page, String partialName) {
+        int offset = (page - 1) * 6;
+        return itemRepo.findSixItems(offset,partialName);
+    }
+
+    @Override
+    public int countAllItems(String partialName) {
+        return itemRepo.countAllItems(partialName);
+    }
+
+    @Override
+    public int countAllItemsByCategoryId(int id, String partialName) {
+        return itemRepo.countAllByCategoryId(id,partialName);
+    }
+
+    @Override
+    public List<Item> getSixItemsByCategoryId(int id, int page, String partialName) {
+        int offset = (page - 1) * 6;
+        return itemRepo.findSixItemsByCategoryId(id,offset,partialName);
     }
 
     public List<String> getAllItemImages() {
