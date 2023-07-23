@@ -4,9 +4,12 @@ package com.system.online_ordering_system.controller;
 import com.system.online_ordering_system.dto.OtpDto;
 import com.system.online_ordering_system.dto.UserDto;
 import com.system.online_ordering_system.entity.User;
+import com.system.online_ordering_system.service.UserHistoryService;
 import com.system.online_ordering_system.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,6 +30,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final UserHistoryService userHistoryService;
     @GetMapping("/register")
     public String register(){
         return "user/register";
@@ -40,6 +44,8 @@ public class UserController {
 
     @GetMapping("/login")
     public String login(){
+
+        userHistoryService.generateAllUserHistory();
         return "user/login";
     }
 
@@ -48,6 +54,19 @@ public class UserController {
         this.userService.sendEmail(email);
         model.addAttribute("email",email);
         return "user/verifyOtp";
+    }
+
+    @PostMapping("/delete")
+    public String deleteUser(){
+        User user = userService.getActiveUser().get();
+        userService.deleteUser(user.getId());
+        return "redirect:/user/login";
+    }
+
+    @PostMapping("/logout")
+    public String logout(Authentication authentication){
+            SecurityContextHolder.clearContext();
+        return "redirect:/user/login";
     }
 
 
@@ -88,6 +107,8 @@ public class UserController {
         String base64 = Base64.getEncoder().encodeToString(bytes);
         return base64;
     }
+
+
 
 
 

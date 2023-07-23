@@ -103,6 +103,10 @@
 </header>
 <!-- Menu Section -->
 <section class="menu-section">
+    <div class="alert alert-warning alert-dismissible fade show" role="alert" th:if="${param.invalidQuantity}">
+        <strong>Invalid Quantity!</strong> Please enter a valid quantity.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
     <div class="container-fluid">
         <div class="row">
             <!-- Add the search and filters here -->
@@ -138,7 +142,8 @@
                                 <p class="card-text"><strong>Category:</strong> <span th:text="${item.category.categoryName}">Pizza</span></p>
                                 <p class="card-text"><strong>Price:</strong> <span th:text="${item.itemPrice}">$12.99</span></p>
                                 <p class="card-text"><strong>Available Quantity:</strong> <span th:text="${item.itemQuantity}">10</span></p>
-                                <button class="btn btn-primary" id="cartBtn" data-bs-toggle="modal" data-bs-target="#cartConfirmationModal" th:data-item-id="${item.itemId}" th:data-item-name="${item.itemName}" th:data-item-price="${item.itemPrice}" th:data-item-quantity="${item.itemQuantity}">Add to Cart</button>
+                                <button class="btn btn-primary" th:if="${item.itemQuantity>0}" id="cartBtn" data-bs-toggle="modal" data-bs-target="#cartConfirmationModal" th:data-item-id="${item.itemId}" th:data-item-name="${item.itemName}" th:data-item-price="${item.itemPrice}" th:data-item-quantity="${item.itemQuantity}">Add to Cart</button>
+                                <button class="btn btn-primary" th:if="${item.itemQuantity<=0}" data-bs-toggle="modal" data-bs-target="#errorMsg">Add to Cart</button>
                             </div>
                         </div>
                     </div>
@@ -168,7 +173,22 @@
         </div>
     </div>
 </section>
+<!--Error Msg Modal-->
+<div class="modal fade" id="errorMsg" tabindex="-1" aria-labelledby="errorMsg" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal header">
+                <h5 class="modal-title">Error</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Item is not available!</p>
+            </div>
+        </div>
+    </div>
+</div>
 
+<!--Cart Confirmation Model-->
 <div class="modal fade" id="cartConfirmationModal" tabindex="-1" aria-labelledby="cartConfirmationModal" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">

@@ -79,7 +79,7 @@
                             <td th:text="${user.loginTime}">Date</td>
                             <td>
                                 <div class="row">
-                                    <a th:href="@{/user/history/{id}(id=${user.id})}" class="btn btn-primary">View History</a>
+                                    <a th:href="@{/userHistory/list/{id}(id=${user.id})}" class="btn btn-primary">View History</a>
                                 </div>
                             </td>
                         </tr>
