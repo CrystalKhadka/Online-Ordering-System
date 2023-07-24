@@ -35,4 +35,8 @@ public class Cart {
     @Column(name = "status", columnDefinition = "varchar(255) default 'pending'")
     private String status;
 
+    @ManyToOne
+    @JoinColumn(name = "bill_id")
+    private Bill bill;
+
 }

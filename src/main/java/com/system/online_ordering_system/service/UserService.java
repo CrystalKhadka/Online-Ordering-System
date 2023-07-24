@@ -21,4 +21,6 @@ public interface UserService {
     List<User> getAllUsers();
 
     Optional<User> getActiveUser();
+
+    void deleteUser(int id);
 }
