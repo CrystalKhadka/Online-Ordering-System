@@ -1,8 +1,12 @@
 package com.system.online_ordering_system.controller;
 
+import com.system.online_ordering_system.entity.Bill;
 import com.system.online_ordering_system.entity.Item;
+import com.system.online_ordering_system.entity.User;
+import com.system.online_ordering_system.service.BillService;
 import com.system.online_ordering_system.service.CategoryService;
 import com.system.online_ordering_system.service.ItemService;
+import com.system.online_ordering_system.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,19 +33,49 @@ import java.util.List;
 public class DashboardController {
     private final ItemService itemService;
     private final CategoryService categoryService;
+    private final BillService  billService;
+    private final UserService userService;
 
     @GetMapping("/")
     public String dashboard(Model model){
-        List<Integer> barData = Arrays.asList(10, 20, 15, 25, 30, 22, 18, 14, 32, 28);
+        List<Bill>  bills=billService.getBillForTenDays();
+        int[] barData=generateBarData(bills);
+
         List<Integer> pieData = Arrays.asList(12, 19, 3, 5, 2);
+        User user=userService.getActiveUser().get();
+        String name=user.getFirstName()+" "+user.getLastName();
+        model.addAttribute("name",name);
 
         model.addAttribute("barData", barData);
         model.addAttribute("pieData", pieData);
+
 
         // Generate date labels for the previous ten days
         List<String> dateLabels = generateDateLabels();
         model.addAttribute("dateLabels", dateLabels);
         return "dashboard/userDashboard";
+    }
+
+
+    int[] generateBarData(List<Bill> bills){
+        int[] data=new int[10];
+        for(Bill bill   :bills){
+            LocalDateTime date=bill.getDate();
+            int index=(date.getDayOfMonth()-1)%10;
+            data[index]+=bill.getTotal();
+        }
+        return data;
+    }
+
+    List<String> generateDateLabels() {
+        List<String> dateLabels = new ArrayList<>();
+        LocalDate date = LocalDate.now().minusDays(9);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMM");
+        for (int i = 0; i < 10; i++) {
+            dateLabels.add(date.format(formatter));
+            date = date.plusDays(1);
+        }
+        return dateLabels;
     }
 
 
@@ -102,15 +138,6 @@ public class DashboardController {
     }
 
 
-    private List<String> generateDateLabels() {
-        List<String> dateLabels = new ArrayList<>();
-        LocalDate currentDate = LocalDate.now();
-        for (int i = 9; i >= 0; i--) {
-            LocalDate date = currentDate.minusDays(i);
-            dateLabels.add(date.format(DateTimeFormatter.ofPattern("d MMM")));
-        }
-        return dateLabels;
-    }
     public String getImageBase64(String fileName) {
         String filePath = System.getProperty("user.dir") + "/item_img/";
         File file = new File(filePath + fileName);

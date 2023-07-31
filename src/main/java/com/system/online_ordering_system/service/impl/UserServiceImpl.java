@@ -161,6 +161,56 @@ public class UserServiceImpl implements UserService {
         userRepo.deleteById(id);
     }
 
+    @Override
+    public void sendResetEmail(String email) {
+        try {
+            User user = userRepo.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+
+            Map<String, String> model = new HashMap<>();
+            model.put("name", user.getFirstName() + " " + user.getLastName());
+            String otpCode= generateRandomNumber();
+            model.put("otp", otpCode);
+            Otp otp = otpRepo.findByEmail(email).orElse(new Otp());
+            otp.setEmail(email);
+            otp.setOtp(otpCode);
+            otp.setDate(getDate());
+            otpRepo.save(otp);
+
+            MimeMessage message = getJavaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, StandardCharsets.UTF_8.name());
+
+            Template template = emailConfig.getTemplate("Email/resetPassTemp.ftl");
+            String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, model);
+
+            mimeMessageHelper.setTo(email);
+            mimeMessageHelper.setText(html, true);
+            mimeMessageHelper.setSubject("Registration");
+            mimeMessageHelper.setFrom("khadkacrystal23@gmail.com");;
+
+
+            taskExecutor.execute(new Thread() {
+                public void run() {
+                    getJavaMailSender.send(message);
+                }
+            });
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void resetPass(String email, String password, String Otp) throws IOException {
+        Otp otp1 = otpRepo.findByEmail(email).orElseThrow(() -> new RuntimeException("Email not found"));
+        if (otp1.getOtp().equals(Otp) && otp1.getDate().isAfter(LocalDateTime.now())) {
+            User user = userRepo.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+            user.setPassword(PasswordEncoderUtil.getInstance().encode(password));
+            userRepo.save(user);
+        } else {
+            throw new RuntimeException("Invalid OTP");
+        }
+    }
+
 
     @Override
     public Optional<User> findByEmail(String email) {

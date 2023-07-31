@@ -12,10 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,6 +53,24 @@ public class UserController {
         return "user/verifyOtp";
     }
 
+    @PostMapping("/sendResetEmail")
+    public String sendResetEmail(@RequestParam("email") String email) throws IOException  {
+        return "redirect:/user/sendResetEmail/"+email;
+    }
+    @GetMapping("/sendResetEmail/{email}")
+    public String sendResetEmail(@PathVariable("email") String email,Model model) throws IOException  {
+        System.out.println("Email: "+email);
+        this.userService.sendResetEmail(email);
+        model.addAttribute("email",email);
+        return "user/resetPassword";
+    }
+
+    @PostMapping("/resetPass")
+    public String resetPassword(@RequestParam("email") String email,@RequestParam("password") String password,@RequestParam("otp") String otp) throws IOException  {
+        this.userService.resetPass(email,password,otp);
+        return "redirect:/user/login";
+    }
+
     @PostMapping("/delete")
     public String deleteUser(){
         User user = userService.getActiveUser().get();
@@ -93,6 +108,16 @@ public class UserController {
         ));
         return "user/userList";
     }
+
+    @GetMapping("/profile")
+    public String profile(Model model) throws IOException {
+        User user = userService.getActiveUser().get();
+        model.addAttribute("user",user);
+        model.addAttribute("imageBase64",getImageBase64(user.getImage()));
+        return "user/profile";
+    }
+
+
 
     public String getImageBase64(String fileName) {
         String filePath = System.getProperty("user.dir") + "/user_images/";

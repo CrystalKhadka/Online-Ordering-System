@@ -11,6 +11,7 @@ import com.system.online_ordering_system.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -49,5 +50,14 @@ public class BillServiceImpl implements BillService {
     @Override
     public List<Bill> getAllBillsByUser(int id) {
         return billRepo.findAllByUser(id);
+    }
+
+    @Override
+    public List<Bill> getBillForTenDays() {
+        User user=userService.getActiveUser().get();
+        LocalDateTime localDateTime=LocalDateTime.now();
+        LocalDate startDate=localDateTime.toLocalDate().minusDays(10);
+        LocalDate endDate=localDateTime.toLocalDate();
+        return billRepo.findBillForTenDays(user.getId(),startDate,endDate);
     }
 }

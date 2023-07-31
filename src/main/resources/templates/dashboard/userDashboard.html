@@ -99,7 +99,7 @@
         <div class="container-fluid" style="min-height: 80px">
             <a class="navbar-brand" href="#">
                 <!-- Replace the text with your logo or image -->
-                <img src="your-logo.png" alt="Logo" width="50" height="50">
+                <img src="../../static/img/logo4.png" alt="Logo">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -136,37 +136,39 @@
 <main>
     <div class="container-fluid">
         <div class="welcome-section">
-            <h1>Welcome to Our Dashboard!</h1>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer hendrerit dui ac leo congue, ac varius nunc eleifend.</p>
+            <h1>Welcome, <span th:text="${name}">Crystal</span></h1>
         </div>
 
         <!-- Chart container with both charts side by side -->
         <div class="row">
+            <div class="col-lg-3"></div>
             <div class="col-lg-6 col-md-12">
                 <!-- Sample Bar Chart -->
-                <div class="chart-container">
-                    <h2>Sample Bar Chart</h2>
+                <div class="chart-container mx-auto">
+                    <h2>Ten days history</h2>
                     <canvas id="barChart" width="400" height="200"></canvas>
-                    <p>This is a sample bar chart that displays data for the months of January to June. The y-axis represents the values, and the x-axis represents the months. The chart shows the sample data in a bar format, allowing you to compare values easily.</p>
-                </div>
-            </div>
-
-            <div class="col-lg-6 col-md-12">
-                <!-- Sample Pie Chart -->
-                <div class="chart-container">
-
-                    <h2>Sample Pie Chart</h2>
-                    <canvas id="pieChart" width="1" height="150"></canvas>
-                    <p>This is a sample pie chart that displays data for different colors. Each color segment represents the proportion of a particular color in the dataset. The chart provides an easy visualization of how the colors compare to each other in the dataset.</p>
+                    <p>This is a bar chart that displays the historical data for the past ten days.</p>
                 </div>
             </div>
         </div>
 
-        <div class="about-us-section">
-            <h2>About Us</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis euismod ex at elit accumsan, eu pulvinar orci pulvinar. Sed at velit vel nisi scelerisque euismod. Donec eu felis fermentum, efficitur sapien et, gravida felis. In id mi et velit sagittis bibendum.</p>
-            <p>Praesent aliquet, odio eget dictum ultrices, quam velit tincidunt mi, at blandit erat orci auctor elit. Proin pharetra justo sed dui feugiat, at posuere nulla venenatis. Integer fermentum, arcu eu dignissim luctus, turpis augue auctor elit, at varius mauris odio quis velit.</p>
+        <div class="row">
+            <div class="col-3"></div>
+            <div class="col-8">
+                <div class="about-us-section mx-auto">
+                    <h2>About Us</h2>
+                    <p>Discover a convenient online food ordering experience that puts you in control:</p>
+                    <ul>
+                        <li>Explore a diverse menu selection with delectable dishes.</li>
+                        <li>Add items to your cart effortlessly and customize your orders.</li>
+                        <li>Access your order history to track past orders and preferences.</li>
+                        <li>Enjoy a secure checkout process for a worry-free experience.</li>
+                    </ul>
+                    <p>We are committed to delivering an exceptional dining journey, harnessing technology for your satisfaction.</p>
+                </div>
+            </div>
         </div>
+        
     </div>
 </main>
 
@@ -260,10 +262,9 @@
 <script th:inline="javascript">
     // Sample data for the charts
     const barData = [[${barData}]];
-    const pieData = [[${pieData}]];
 
     // Date labels for the previous ten days
-    const dateLabels = /*[[${dateLabels}]]*/ [];
+    const dateLabels = [[${dateLabels}]];
 
     // Create the bar chart
     const barChartCtx = document.getElementById('barChart').getContext('2d');
@@ -285,19 +286,6 @@
                     beginAtZero: true
                 }
             }
-        }
-    });
-
-    // Create the pie chart
-    const pieChartCtx = document.getElementById('pieChart').getContext('2d');
-    const pieChart = new Chart(pieChartCtx, {
-        type: 'pie',
-        data: {
-            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple'],
-            datasets: [{
-                data: pieData,
-                backgroundColor: ['red', 'blue', 'yellow', 'green', 'purple'],
-            }]
         }
     });
 </script>
