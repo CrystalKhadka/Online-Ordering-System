@@ -9,4 +9,6 @@ public interface BillService {
     void generateBill();
 
     List<Bill> getAllBillsByUser(int id);
+
+    List<Bill> getBillForTenDays();
 }

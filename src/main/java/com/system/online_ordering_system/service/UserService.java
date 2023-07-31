@@ -23,4 +23,8 @@ public interface UserService {
     Optional<User> getActiveUser();
 
     void deleteUser(int id);
+
+    void sendResetEmail(String email) throws IOException;
+
+    void resetPass(String email, String password,String Otp) throws IOException;
 }

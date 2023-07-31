@@ -1,10 +1,204 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="en">
 
+<!------ Include the above in your HEAD tag ---------->
+
+<head>
+    <title>E-commerce</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="../../static/css/header.css" rel="stylesheet" th:href="@{/css/header.css}">
+    <link href="../../static/css/footer.css" rel="stylesheet" th:href="@{/css/footer.css}">
+</head>
+
+
+<body>
+<header class="sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid" style="min-height: 80px">
+            <a class="navbar-brand" href="#">
+                <!-- Replace the text with your logo or image -->
+                <img src="your-logo.png" alt="Logo" width="50" height="50">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" th:href="@{/dashboard/}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link"  th:href="@{/dashboard/menu}">Menu</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Cart</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Profile
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">View Profile</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">Delete account</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<main >
+    <div class="mt-5 container" style="height: 40rem">
+        <div class="col-sm-12">
+                <!-- Bootstrap Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>View Profile</h3>
+                    </div>
+                    <div class="card-body">
+                        <form class="form" th:action="@{/user/update}" th:method="post" id="registrationForm"
+                              enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-5">
+                                    <div class="form-group m-4">
+                                        <div class="text-center">
+                                            <img src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" id="preview"
+                                                 class="avatar img-circle img-thumbnail" alt="avatar" th:src="'data:image/png;base64,'+${imageBase64}">
+                                            <h6>Upload a different photo...</h6>
+                                            <input accept="image/*" name="Image" id="image" type="file"
+                                                   class="text-center center-block file-upload">
+                                        </div><br>
+                                    </div>
+                                </div>
+
+                                    <div class="col-7">
+                                        <div class="form-group m-4">
+
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <label for="first_name"><h4>First name</h4></label>
+                                                <input type="text" class="form-control" name="fname"
+                                                       th:field="${user.firstName}" id="first_name" placeholder="first name"
+                                                       title="enter your first name if any.">
+                                            </div>
+                                            <div class="col-6">
+                                                <label for="last_name"><h4>Last name</h4></label>
+                                                <input type="text" class="form-control" name="lname"
+                                                       th:field="${user.lastName}" id="last_name" placeholder="last name"
+                                                       title="enter your last name if any.">
+                                            </div>
+                                        </div>
+                                        </div>
+
+                                        <div class="form-group m-4">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <label for="phone"><h4>Phone</h4></label>
+                                                    <input type="text" class="form-control"
+                                                           th:field="${user.phoneNumber}" name="phoneNumber" id="phone"
+                                                           placeholder="enter phone"
+                                                           title="enter your phone number if any.">
+                                                </div>
+                                                <div class="col-6">
+                                                    <label class="h4" for="location">Address</label>
+                                                    <input type="text" class="form-control" name="address"
+                                                           id="location" th:field="${user.address}"
+                                                           placeholder="somewhere" title="enter a location">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group m-4">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <label  class="h4" for="email">Email</label>
+                                                    <input type="email" class="form-control" name="email" id="email"
+                                                           th:field="${user.email}" placeholder="you@email.com"
+                                                           title="enter your email.">
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group m-4">
+                                            <div class="col-xs-12">
+                                                <br>
+                                                <button class="btn btn-lg btn-success" type="submit"><i
+                                                        class="glyphicon glyphicon-ok-sign"></i> Save</button>
+                                                <button class="btn btn-lg" type="reset"><i
+                                                        class="glyphicon glyphicon-repeat"></i> Reset</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- End of Bootstrap Card -->
+
+            </div><!--/col-9-->
+        </div><!--/row-->
+</main>
+<footer>
+    <div class="container-fluid bg-dark text-light py-4">
+        <div class="row">
+            <div class="col-md-3">
+                <h5>Explore</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#">Menu</a></li>
+                    <li><a href="#">Order Now</a></li>
+                    <li><a href="#">Deals</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3">
+                <h5>Support</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#">Customer Service</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3">
+                <h5>About Us</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#">Our Story</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3">
+                <h5>Follow Us</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#">Facebook</a></li>
+                    <li><a href="#">Twitter</a></li>
+                    <li><a href="#">Instagram</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid bg-secondary text-light text-center py-2">
+        <p>&copy; 2023 Food Ordering Website. All rights reserved.</p>
+    </div>
+</footer>
+
+<script>
+    // JavaScript code for updating the selected image
+    document.getElementById('image').addEventListener('change', function(event) {
+        var file = event.target.files[0];
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('preview').src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+</script>
 </body>
 </html>
