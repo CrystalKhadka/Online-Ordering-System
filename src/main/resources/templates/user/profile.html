@@ -116,8 +116,8 @@
                                             <img src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" id="preview"
                                                  class="avatar img-circle img-thumbnail" alt="avatar" th:src="'data:image/png;base64,'+${imageBase64}">
                                             <h6>Upload a different photo...</h6>
-                                            <input accept="image/*" name="Image" id="image" type="file"
-                                                   class="text-center center-block file-upload">
+                                            <input accept="image/*" name="image" id="image" type="file"
+                                                   class="text-center center-block file-upload"  th:value="${imageBase64}">
                                         </div><br>
                                     </div>
                                 </div>
