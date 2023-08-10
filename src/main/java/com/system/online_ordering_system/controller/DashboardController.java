@@ -40,14 +40,14 @@ public class DashboardController {
     public String dashboard(Model model){
         List<Bill>  bills=billService.getBillForTenDays();
         int[] barData=generateBarData(bills);
+        for (int i = 0; i < barData.length; i++) {
+            System.out.println(barData[i]);
+        }
 
-        List<Integer> pieData = Arrays.asList(12, 19, 3, 5, 2);
-        User user=userService.getActiveUser().get();
-        String name=user.getFirstName()+" "+user.getLastName();
-        model.addAttribute("name",name);
+        User activeUser = userService.getActiveUser().get();
+        model.addAttribute("user",activeUser);
 
         model.addAttribute("barData", barData);
-        model.addAttribute("pieData", pieData);
 
 
         // Generate date labels for the previous ten days
@@ -134,6 +134,9 @@ public class DashboardController {
                 .category(item.getCategory())
                 .build()
         ));
+
+        User activeUser = userService.getActiveUser().get();
+        model.addAttribute("user",activeUser);
         return "dashboard/menu";
     }
 

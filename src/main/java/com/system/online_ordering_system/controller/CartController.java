@@ -36,6 +36,7 @@ public class CartController {
     @GetMapping("/list")
     public String getCartList(Model model) {
         User user = userService.getActiveUser().get();
+        model.addAttribute("user",user);
         List<Cart> carts=cartService.getCartListByStatusUnpaid(user);
         model.addAttribute("carts", carts);
         model.addAttribute("total", carts.stream().mapToDouble(Cart::getTotalPrice).sum());

@@ -2,8 +2,10 @@ package com.system.online_ordering_system.controller;
 
 import com.system.online_ordering_system.dto.ItemDto;
 import com.system.online_ordering_system.entity.Item;
+import com.system.online_ordering_system.entity.User;
 import com.system.online_ordering_system.service.CategoryService;
 import com.system.online_ordering_system.service.ItemService;
+import com.system.online_ordering_system.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -23,8 +25,12 @@ public class ItemController {
     private final CategoryService categoryService;
 
     private final ItemService itemService;
+
+    private final UserService userService;
     @GetMapping("/add")
     public String addItem(Model model){
+        User activeUser = userService.getActiveUser().get();
+        model.addAttribute("user",activeUser);
         model.addAttribute("categories",categoryService.getAllCategories());
         return "Item/addItem";
     }
@@ -43,6 +49,8 @@ public class ItemController {
             ,@RequestParam(defaultValue = "id") String sort,
             @RequestParam(defaultValue = "asc") String order) throws IOException {
 
+        User activeUser = userService.getActiveUser().get();
+        model.addAttribute("user",activeUser);
         List<Item> allItems = itemService.getAllItems();
         int totalItems = allItems.size();
         int pageSize=3;
@@ -84,6 +92,8 @@ public class ItemController {
 
     @GetMapping("/edit/{id}")
     public String editItem(@PathVariable("id") int id, Model model) {
+        User activeUser = userService.getActiveUser().get();
+        model.addAttribute("user",activeUser);
         Item item = itemService.getItemById(id).get();
         model.addAttribute("item", item);
         model.addAttribute("itemResizeImageBase64", getImageBase64(item.getItemResizeImage()));

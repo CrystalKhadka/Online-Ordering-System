@@ -57,7 +57,7 @@ public class BillServiceImpl implements BillService {
         User user=userService.getActiveUser().get();
         LocalDateTime localDateTime=LocalDateTime.now();
         LocalDate startDate=localDateTime.toLocalDate().minusDays(10);
-        LocalDate endDate=localDateTime.toLocalDate();
+        LocalDate endDate=localDateTime.toLocalDate().plusDays(1);
         return billRepo.findBillForTenDays(user.getId(),startDate,endDate);
     }
 }

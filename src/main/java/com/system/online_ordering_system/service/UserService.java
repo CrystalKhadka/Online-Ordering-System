@@ -2,6 +2,7 @@ package com.system.online_ordering_system.service;
 
 import com.system.online_ordering_system.dto.OtpDto;
 import com.system.online_ordering_system.dto.UserDto;
+
 import com.system.online_ordering_system.entity.User;
 
 import java.io.IOException;
@@ -27,4 +28,8 @@ public interface UserService {
     void sendResetEmail(String email) throws IOException;
 
     void resetPass(String email, String password,String Otp) throws IOException;
+
+    void update(UserDto userDto);
+
+
 }

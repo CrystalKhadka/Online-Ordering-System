@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -30,7 +31,7 @@ public class SecurityUserDetailService implements UserDetailsService {
             user.setLoginTime(LocalDateTime.now());
             userRepository.save(user);
             Set<GrantedAuthority> authorities = new HashSet<>();
-            authorities.add(new SimpleGrantedAuthority(user.getRoles().toString()));
+            authorities.add(new SimpleGrantedAuthority(user.getRole()));
             return new org.springframework.security.core.userdetails.User(
                     user.getEmail(),
                     user.getPassword(),

@@ -1,10 +1,14 @@
 package com.system.online_ordering_system.security;
 
 import com.system.online_ordering_system.config.PasswordEncoderUtil;
+
 import com.system.online_ordering_system.service.impl.SecurityUserDetailService;
+import io.cucumber.java.mk_latn.No;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -44,7 +48,7 @@ public class SpringSecurityConfig {
                 .and()
                 .formLogin()
                 .loginPage("/user/login")
-                .defaultSuccessUrl("/dashboard/",true)
+                .successHandler(new RoleBasedAuthenticationSuccessHandler())
                 .usernameParameter("email")
                 .permitAll()
                 .and()
@@ -58,6 +62,22 @@ public class SpringSecurityConfig {
 
 
         return httpSecurity.build();
+    }
+
+
+    private static class RoleBasedAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+
+        @Override
+        public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException, IOException {
+
+            for (GrantedAuthority authority : authentication.getAuthorities()) {
+                if (authority.getAuthority().equals("Admin")){
+                    response.sendRedirect("/user/list");
+                    return;
+                }
+            }
+            response.sendRedirect("/dashboard/");
+        }
     }
 
 
