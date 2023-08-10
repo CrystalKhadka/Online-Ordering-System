@@ -7,20 +7,20 @@
     <title>E-commerce</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="../../static/css/header.css" rel="stylesheet" th:href="@{/css/header.css}">
     <link href="../../static/css/footer.css" rel="stylesheet" th:href="@{/css/footer.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
 
 <body>
-<header class="sticky-top">
+<header class="sticky-top" th:if="${user.role=='User'}">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid" style="min-height: 80px">
             <a class="navbar-brand" href="#">
                 <!-- Replace the text with your logo or image -->
-                <img src="your-logo.png" alt="Logo" width="50" height="50">
+                <img src="../../static/img/logo4.png" alt="Logo" th:src="@{/img/logo4.png}">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -28,26 +28,70 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" th:href="@{/dashboard/}">Home</a>
+                        <a class="nav-link" th:href="@{/dashboard/}">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link"  th:href="@{/dashboard/menu}">Menu</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Cart</a>
+                        <a class="nav-link" href="/cart/list">Cart</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle active" role="button" th:text="${user.firstName}" data-bs-toggle="dropdown" aria-expanded="false">
                             Profile
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">View Profile</a></li>
+                            <li><a class="dropdown-item" href="/user/profile">View Profile</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#">Delete account</a></li>
+                            <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal">Delete Account</button></li>
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Logout</a>
+                        <button class="nav-link" type="button" data-bs-target="#logoutConfirmationModal" data-bs-toggle="modal">Logout</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<header th:if="${user.role=='Admin'}" >
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid" style="min-height: 80px">
+            <a class="navbar-brand" href="#">
+                <img th:src="@{/img/logo4.png}" src="../../static/img/logo4.png" alt="">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarAdminSupportedContent" aria-controls="navbarAdminSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarAdminSupportedContent">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active"  href="/user/list">User List</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false"  >
+                            Item
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/item/add">Add Item</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="/item/list">Item List</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" th:text="${user.firstName}" >
+                            Profile
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/user/profile">View Profile</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal">Delete Account</button>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" type="button" data-bs-target="#logoutConfirmationModal" data-bs-toggle="modal">Logout</button>
                     </li>
                 </ul>
             </div>
@@ -102,7 +146,7 @@
                                                 <div class="col-6">
                                                     <label for="phone"><h4>Phone</h4></label>
                                                     <input type="text" class="form-control"
-                                                           th:field="${user.phoneNumber}" name="phoneNumber" id="phone"
+                                                           th:value="${user.phoneNumber}" name="phone" id="phone"
                                                            placeholder="enter phone"
                                                            title="enter your phone number if any.">
                                                 </div>
@@ -121,22 +165,35 @@
                                                     <label  class="h4" for="email">Email</label>
                                                     <input type="email" class="form-control" name="email" id="email"
                                                            th:field="${user.email}" placeholder="you@email.com"
-                                                           title="enter your email.">
+                                                           title="enter your email." readonly>
                                                 </div>
 
                                             </div>
                                         </div>
 
-
                                         <div class="form-group m-4">
                                             <div class="col-xs-12">
-                                                <br>
-                                                <button class="btn btn-lg btn-success" type="submit"><i
-                                                        class="glyphicon glyphicon-ok-sign"></i> Save</button>
-                                                <button class="btn btn-lg" type="reset"><i
-                                                        class="glyphicon glyphicon-repeat"></i> Reset</button>
+                                                <div class="row">
+                                                    <div class="col-3">
+                                                        <a class="btn btn-primary" th:href="@{/userHistory/list/{id}(id=${user.id})}">
+                                                            <i class="glyphicon glyphicon-arrow-left"></i> User History
+                                                        </a>
+                                                    </div>
+                                                    <div class="col-3">
+                                                        <button class="btn btn-success" type="submit">
+                                                            <i class="glyphicon glyphicon-ok-sign"></i> Save
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-3">
+                                                        <a class="btn btn-secondary" href="/user/profile">
+                                                            <i class="glyphicon glyphicon-repeat"></i> Reset
+                                                        </a>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
+
+
                                     </div>
                                 </div>
                         </form>
@@ -189,6 +246,50 @@
     </div>
 </footer>
 
+<!--Delete Modal-->
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirmation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this account?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <!-- Delete link to the delete URL -->
+                <form th:action="@{/user/delete}" method="post">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Logout Confirmation model-->
+<div class="modal fade" id="logoutConfirmationModal" tabindex="-1" aria-labelledby="logoutConfirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="logoutConfirmationModalLabel">Confirmation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to log out?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <!-- Delete link to the delete URL -->
+                <form th:action="@{/user/logout}" method="post">
+                    <button type="submit" class="btn btn-danger">Logout</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     // JavaScript code for updating the selected image
     document.getElementById('image').addEventListener('change', function(event) {
@@ -200,5 +301,7 @@
         reader.readAsDataURL(file);
     });
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

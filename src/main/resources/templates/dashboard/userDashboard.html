@@ -94,12 +94,12 @@
 </head>
 <body>
 
-<header class="sticky-top">
+<header class="sticky-top" th:if="${user.role=='User'}">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid" style="min-height: 80px">
             <a class="navbar-brand" href="#">
                 <!-- Replace the text with your logo or image -->
-                <img src="../../static/img/logo4.png" alt="Logo">
+                <img src="../../static/img/logo4.png" alt="Logo" th:src="@{/img/logo4.png}">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -107,20 +107,20 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" th:href="@{/dashboard/}">Home</a>
+                        <a class="nav-link" th:href="@{/dashboard/}">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link"  th:href="@{/dashboard/menu}">Menu</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Cart</a>
+                        <a class="nav-link" href="/cart/list">Cart</a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle active" role="button" th:text="${user.firstName}" data-bs-toggle="dropdown" aria-expanded="false">
                             Profile
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">View Profile</a></li>
+                            <li><a class="dropdown-item" href="/user/profile">View Profile</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><button class="dropdown-item" type="button" data-bs-toggle="modal" data-bs-target="#deleteConfirmationModal">Delete Account</button></li>
                         </ul>
@@ -136,7 +136,7 @@
 <main>
     <div class="container-fluid">
         <div class="welcome-section">
-            <h1>Welcome, <span th:text="${name}">Crystal</span></h1>
+            <h1>Welcome, <span th:text="${user.firstName}+' '+${user.lastName}">Crystal</span></h1>
         </div>
 
         <!-- Chart container with both charts side by side -->
@@ -273,7 +273,7 @@
         data: {
             labels: dateLabels,
             datasets: [{
-                label: 'Sample Bar Chart',
+                label: 'Bar Chart',
                 data: barData,
                 backgroundColor: 'rgba(75, 192, 192, 0.8)',
                 borderColor: 'rgba(75, 192, 192, 1)',

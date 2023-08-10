@@ -21,4 +21,6 @@ public class UserDto {
     private String phone;
     private String address;
     private MultipartFile image;
+
+    private String role;
 }

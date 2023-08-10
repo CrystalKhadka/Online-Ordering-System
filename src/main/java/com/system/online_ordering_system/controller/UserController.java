@@ -29,13 +29,17 @@ public class UserController {
     private final UserService userService;
     private final UserHistoryService userHistoryService;
     @GetMapping("/register")
-    public String register(){
+    public String register(Model model){
         return "user/register";
     }
 
     @PostMapping("/register")
     public String registerUser(@Valid UserDto userDto) throws IOException {
+
+
+        System.out.println(userDto.getRole());
         userService.register(userDto);
+
         return "redirect:/user/sendEmail/"+userDto.getEmail();
     }
 
@@ -66,8 +70,12 @@ public class UserController {
     }
 
     @PostMapping("/resetPass")
-    public String resetPassword(@RequestParam("email") String email,@RequestParam("password") String password,@RequestParam("otp") String otp) throws IOException  {
-        this.userService.resetPass(email,password,otp);
+    public String resetPassword(@RequestParam("email") String email,@RequestParam("password") String password,@RequestParam("otp") String otp,@RequestParam("cPassword") String cPass) throws IOException  {
+        if(!password.equals(cPass)){
+            return "redirect:/user/sendResetEmail/"+email+"?error=Password and Confirm Password must be same";
+        }
+
+        userService.resetPass(email,password,otp);
         return "redirect:/user/login";
     }
 
@@ -94,6 +102,8 @@ public class UserController {
 
     @GetMapping("/list")
     public String listUsers(Model model) throws IOException {
+        User activeUser = userService.getActiveUser().get();
+        model.addAttribute("user",activeUser);
         List<User> users = userService.getAllUsers();
         model.addAttribute("users",users.stream().map(user -> User.builder()
                 .id(user.getId())
@@ -115,6 +125,12 @@ public class UserController {
         model.addAttribute("user",user);
         model.addAttribute("imageBase64",getImageBase64(user.getImage()));
         return "user/profile";
+    }
+
+    @PostMapping("/update")
+    public String update(@Valid UserDto userDto) throws IOException {
+        userService.update(userDto);
+        return "redirect:/user/login";
     }
 
 

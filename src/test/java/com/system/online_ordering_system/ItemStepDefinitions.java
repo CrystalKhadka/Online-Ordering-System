@@ -75,8 +75,10 @@ public class ItemStepDefinitions {
     public void find_item_by_id() {
         item = itemRepo.findById(3).orElse(null);
         log.info(item);
-       Assert.assertTrue(item != null);
+        Assert.assertTrue(item != null);
 
     }
+
+
 
 }

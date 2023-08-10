@@ -1,8 +1,10 @@
 package com.system.online_ordering_system.controller;
 
 import com.system.online_ordering_system.entity.Bill;
+import com.system.online_ordering_system.entity.User;
 import com.system.online_ordering_system.entity.UserHistory;
 import com.system.online_ordering_system.service.UserHistoryService;
+import com.system.online_ordering_system.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 public class UserHistoryController {
     private final UserHistoryService userHistoryService;
 
+    private final UserService userService;
     @GetMapping("/list/{id}")
     public String listUserHistory(@PathVariable int id, Model model){
         List<UserHistory> userHistories=userHistoryService.getAllUserHistoryByUser(id);
@@ -38,8 +41,8 @@ public class UserHistoryController {
         model.addAttribute("userHistories",userHistories);
         model.addAttribute("months",months);
         model.addAttribute("totals",totals);
-
-
+        User activeUser = userService.getActiveUser().get();
+        model.addAttribute("user",activeUser);
 
 
         return "dashboard/userHistory";

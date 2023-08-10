@@ -4,9 +4,11 @@ import com.system.online_ordering_system.config.PasswordEncoderUtil;
 import com.system.online_ordering_system.dto.OtpDto;
 import com.system.online_ordering_system.dto.UserDto;
 import com.system.online_ordering_system.entity.Otp;
+
 import com.system.online_ordering_system.entity.User;
 import com.system.online_ordering_system.repo.EmailCredRepo;
 import com.system.online_ordering_system.repo.OtpRepo;
+
 import com.system.online_ordering_system.repo.UserRepo;
 import com.system.online_ordering_system.service.UserService;
 import freemarker.template.Configuration;
@@ -16,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.cglib.core.Local;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -89,6 +90,8 @@ public class UserServiceImpl implements UserService {
             user.setImage(imageName + "_resized" + fileExtension);
         }
         user.setActive(false);
+
+        user.setRole(userDto.getRole());
         userRepo.save(user);
     }
 
@@ -211,6 +214,16 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public void update(UserDto userDto) {
+        User user = userRepo.findByEmail(userDto.getEmail()).orElseThrow(() -> new RuntimeException("User not found"));
+        user.setFirstName(userDto.getFirstName());
+        user.setLastName(userDto.getLastName());
+        user.setAddress(userDto.getAddress());
+        user.setPhoneNumber(userDto.getPhone());
+        userRepo.save(user);
+    }
+
 
     @Override
     public Optional<User> findByEmail(String email) {
@@ -229,4 +242,6 @@ public class UserServiceImpl implements UserService {
         LocalDateTime localDateTime = LocalDateTime.now();
         return localDateTime.plusHours(1);
     }
+
+
 }
